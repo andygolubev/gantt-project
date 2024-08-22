@@ -2,7 +2,6 @@
 FROM alpine
 
 COPY ./app/ .
-RUN chmod +x /*
-RUN ls -la /
+RUN chmod +x /connect.sh
 
-CMD ["/connect.sh"]
+CMD ["sh", "-c", "/connect.sh"]
