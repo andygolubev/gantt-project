@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build --file docker/Dockerfile --tag gantt:latest .
+      run: docker build --file Dockerfile --tag gantt:latest .
     - name: Login to ECR
       id: ecr
       uses: jwalton/gh-ecr-login@v3
