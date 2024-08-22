@@ -1,3 +1,4 @@
+
 # VPC
 resource "aws_vpc" "main" {
   cidr_block           = "10.0.0.0/16"
@@ -22,7 +23,7 @@ data "aws_availability_zones" "available" {}
 # Public Subnet 1
 resource "aws_subnet" "public_subnet_1" {
   vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.1.0/24"
+  cidr_block        = "10.0.10.0/24"  # Adjusted CIDR block
   availability_zone = element(data.aws_availability_zones.available.names, 0)
   map_public_ip_on_launch = true
   tags = {
@@ -33,7 +34,7 @@ resource "aws_subnet" "public_subnet_1" {
 # Public Subnet 2
 resource "aws_subnet" "public_subnet_2" {
   vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.2.0/24"
+  cidr_block        = "10.0.20.0/24"  # Adjusted CIDR block
   availability_zone = element(data.aws_availability_zones.available.names, 1)
   map_public_ip_on_launch = true
   tags = {
@@ -44,7 +45,7 @@ resource "aws_subnet" "public_subnet_2" {
 # Private Subnet 1
 resource "aws_subnet" "private_subnet_1" {
   vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.3.0/24"
+  cidr_block        = "10.0.30.0/24"  # Adjusted CIDR block
   availability_zone = element(data.aws_availability_zones.available.names, 0)
   tags = {
     Name = "private-subnet-1"
@@ -54,7 +55,7 @@ resource "aws_subnet" "private_subnet_1" {
 # Private Subnet 2
 resource "aws_subnet" "private_subnet_2" {
   vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.4.0/24"
+  cidr_block        = "10.0.40.0/24"  # Adjusted CIDR block
   availability_zone = element(data.aws_availability_zones.available.names, 1)
   tags = {
     Name = "private-subnet-2"
@@ -103,7 +104,7 @@ resource "aws_route_table_association" "public_assoc_2" {
 
 # NAT Gateway 1
 resource "aws_eip" "nat_eip_1" {
-  vpc = true
+  domain = "vpc"
   tags = {
     Name = "nat-eip-1"
   }
@@ -120,7 +121,7 @@ resource "aws_nat_gateway" "nat_gw_1" {
 
 # NAT Gateway 2
 resource "aws_eip" "nat_eip_2" {
-  vpc = true
+  domain = "vpc"
   tags = {
     Name = "nat-eip-2"
   }
