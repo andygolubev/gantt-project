@@ -104,6 +104,12 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+# IAM Policy Attachment for CloudWatch Logs
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy_logs" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+}
+
 # ECS Task Definition
 resource "aws_ecs_task_definition" "app" {
   family                   = "my-app-task"

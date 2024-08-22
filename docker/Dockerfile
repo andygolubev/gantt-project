@@ -1,9 +1,7 @@
 
 FROM alpine
 
-WORKDIR /app
-
 COPY /app /app
-RUN chmod +x ./*
+RUN chmod +x /app/*
 
-CMD ["connect.sh"]
+CMD ["/app/connect.sh"]
