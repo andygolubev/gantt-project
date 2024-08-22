@@ -1,0 +1,29 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image
+      run: docker build docker/. --file Dockerfile --tag gantt:latest
+    - name: Login to ECR
+      id: ecr
+      uses: jwalton/gh-ecr-login@v3
+      with:
+        access-key-id: "AKIA47CRWIQOJGXD3AEG"
+        secret-access-key: "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"
+        region: us-east-1
+    - name: Push to ECR
+      run: |
+        docker tag my-image ${{ steps.ecr.outputs.account }}.dkr.ecr.us-east-1.amazonaws.com/gantt:latest
+        docker push ${{ steps.ecr.outputs.account }}.dkr.ecr.us-east-1.amazonaws.com/gantt:latest
