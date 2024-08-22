@@ -117,7 +117,7 @@ resource "aws_ecs_task_definition" "app" {
 [
   {
     "name": "my-app",
-    "image": "nginx:latest",
+    "image": "${aws_ecr_repository.gantt.repository_url}:latest",
     "essential": true,
     "portMappings": [
       {
