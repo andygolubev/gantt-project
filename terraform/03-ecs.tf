@@ -125,7 +125,18 @@ resource "aws_ecs_task_definition" "app" {
         "hostPort": 80,
         "protocol": "tcp"
       }
-    ]
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "/ecs/gantt",
+        "awslogs-region": "us-east-1",
+        "awslogs-stream-prefix": "ecs",
+        "awslogs-create-group": "true",
+        "mode": "non-blocking",
+        "max-buffer-size": "25m"
+      }
+    }
   }
 ]
 DEFINITION
