@@ -1,23 +1,9 @@
 
-FROM nginx:alpine
+FROM alpine
 
+WORKDIR /app
 
-WORKDIR /usr/share/nginx/html
+COPY /app /app
+RUN chmod +x ./*
 
-RUN echo '<!DOCTYPE html>' > index.html && \
-    echo '<html lang="en">' >> index.html && \
-    echo '<head>' >> index.html && \
-    echo '    <meta charset="UTF-8">' >> index.html && \
-    echo '    <meta name="viewport" content="width=device-width, initial-scale=1.0">' >> index.html && \
-    echo '    <title>GANTT PAGE</title>' >> index.html && \
-    echo '</head>' >> index.html && \
-    echo '<body>' >> index.html && \
-    echo '    <h1>Welcome to My Custom Nginx Page!</h1>' >> index.html && \
-    echo '    <p>This is a custom main page served by Nginx.</p>' >> index.html && \
-    echo '</body>' >> index.html && \
-    echo '</html>' >> index.html
-
-EXPOSE 80
-
-
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["connect.sh"]

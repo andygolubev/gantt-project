@@ -40,6 +40,7 @@ resource "aws_db_instance" "postgres" {
   engine                  = "postgres"
   instance_class          = "db.t3.micro"  # Minimal size, change as needed
   allocated_storage       = 20             # Minimal size, change as needed
+  db_name                 = "gantt"
   username                = "postgres"
   password                = "postgrespass"
   db_subnet_group_name    = aws_db_subnet_group.rds_subnet_group.name
