@@ -5,9 +5,14 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["Gantt.csproj", "./"]
+COPY ["./app/Gantt/Gantt.csproj", "./"]
+
+# Add the necessary NuGet packages
+RUN dotnet add package Npgsql --version 7.0.0
+RUN dotnet add package Dapper --version 2.0.123
+
 RUN dotnet restore "./Gantt.csproj"
-COPY . .
+COPY ./app/Gantt/ .
 WORKDIR "/src/."
 RUN dotnet build "Gantt.csproj" -c Release -o /app/build
 
