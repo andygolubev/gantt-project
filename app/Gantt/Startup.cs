@@ -104,6 +104,57 @@ public class Startup
                     await context.Response.WriteAsync($"An error occurred: {ex.Message}");
                 }
             });
+
+            endpoints.MapPost("/create-schema", async context =>
+            {
+                var connection = context.RequestServices.GetRequiredService<IDbConnection>();
+
+                var sql = @"
+                    -- Create the users table
+                    CREATE TABLE IF NOT EXISTS users (
+                        id SERIAL PRIMARY KEY,
+                        username VARCHAR(50) UNIQUE NOT NULL,
+                        email VARCHAR(100) UNIQUE NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    );
+
+                    -- Create the posts table
+                    CREATE TABLE IF NOT EXISTS posts (
+                        id SERIAL PRIMARY KEY,
+                        user_id INT REFERENCES users(id) ON DELETE CASCADE,
+                        title VARCHAR(200) NOT NULL,
+                        content TEXT,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    );
+
+                    -- Create the comments table
+                    CREATE TABLE IF NOT EXISTS comments (
+                        id SERIAL PRIMARY KEY,
+                        post_id INT REFERENCES posts(id) ON DELETE CASCADE,
+                        user_id INT REFERENCES users(id) ON DELETE CASCADE,
+                        comment_text TEXT NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    );
+
+                    -- Create indexes to improve performance
+                    CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
+                    CREATE INDEX IF NOT EXISTS idx_posts_user_id ON posts(user_id);
+                    CREATE INDEX IF NOT EXISTS idx_comments_post_id ON comments(post_id);
+                    CREATE INDEX IF NOT EXISTS idx_comments_user_id ON comments(user_id);
+                ";
+
+                try
+                {
+                    await connection.ExecuteAsync(sql);
+                    await context.Response.WriteAsync("Database and tables created successfully.");
+                }
+                catch (Exception ex)
+                {
+                    context.Response.StatusCode = 500; // Internal Server Error
+                    await context.Response.WriteAsync($"An error occurred: {ex.Message}");
+                }
+            });
+        
         });
     }
 }
