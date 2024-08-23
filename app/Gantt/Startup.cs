@@ -70,25 +70,35 @@ public class Startup
             endpoints.MapPost("/write", async context =>
             {
                 var connection = context.RequestServices.GetRequiredService<IDbConnection>();
-                var sql = @"WITH new_user AS (
-                                INSERT INTO users (username, email) 
-                                VALUES 
-                                ('user_' || trunc(random() * 1000)::text, 'user_' || trunc(random() * 1000)::text || '@example.com')
-                                RETURNING id AS user_id
-                            ),
-                            new_post AS (
-                                INSERT INTO posts (user_id, title, content)
-                                SELECT user_id, 'Post Title ' || trunc(random() * 100)::text, 'This is a randomly generated post content.'
-                                FROM new_user
-                                RETURNING id AS post_id, user_id
-                            )
-                            INSERT INTO comments (post_id, user_id, comment_text)
-                            SELECT new_post.post_id, new_post.user_id, 
-                                   'This is a random comment number ' || s.i || ' with random data ' || trunc(random() * 1000)::text
-                            FROM generate_series(1, 100) AS s(i), new_post;";
                 
-                var result = await connection.ExecuteAsync(sql);
-                await context.Response.WriteAsync("Data Inserted Successfully");
+                var sql = @"
+                    WITH new_user AS (
+                        INSERT INTO users (username, email) 
+                        VALUES 
+                        ('user_' || trunc(random() * 1000)::text, 'user_' || trunc(random() * 1000)::text || '@example.com')
+                        RETURNING id AS user_id
+                    ),
+                    new_post AS (
+                        INSERT INTO posts (user_id, title, content)
+                        SELECT user_id, 'Post Title ' || trunc(random() * 100)::text, 'This is a randomly generated post content.'
+                        FROM new_user
+                        RETURNING id AS post_id, user_id
+                    )
+                    INSERT INTO comments (post_id, user_id, comment_text)
+                    SELECT new_post.post_id, new_post.user_id, 
+                        'This is a random comment number ' || s.i || ' with random data ' || trunc(random() * 1000)::text
+                    FROM generate_series(1, 10) AS s(i), new_post;"; // Adjusted to insert 10 comments
+
+                try
+                {
+                    var result = await connection.ExecuteAsync(sql);
+                    await context.Response.WriteAsync("Data Inserted Successfully");
+                }
+                catch (Exception ex)
+                {
+                    context.Response.StatusCode = 500; // Internal Server Error
+                    await context.Response.WriteAsync($"An error occurred: {ex.Message}");
+                }
             });
         });
     }
