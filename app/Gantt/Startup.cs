@@ -4,10 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Npgsql;
-using Microsoft.AspNetCore.Http;
 using Dapper;
 using System.Data;
-using System.Threading.Tasks;
 
 public class Startup
 {
@@ -21,8 +19,14 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddControllers();
-        services.AddSingleton<IDbConnection>(sp =>
-            new NpgsqlConnection(Configuration.GetConnectionString("DefaultConnection")));
+
+        // Use AddScoped instead of AddSingleton for IDbConnection
+        services.AddScoped<IDbConnection>(sp =>
+        {
+            var connection = new NpgsqlConnection(Configuration.GetConnectionString("DefaultConnection"));
+            connection.Open(); // Optionally, open the connection immediately
+            return connection;
+        });
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
