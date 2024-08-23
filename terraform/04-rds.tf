@@ -52,6 +52,13 @@ resource "aws_db_instance" "postgres" {
   monitoring_interval     = 60             # Enable enhanced monitoring (DB Insight)
   monitoring_role_arn     = aws_iam_role.rds_monitoring_role.arn
 
+ # Enable logging
+  enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"] # Logs to export to CloudWatch
+
+  # Performance Insights
+  performance_insights_enabled = true
+  performance_insights_retention_period = 7  # Optional, retention period in days (7 is the default)
+
   tags = {
     Name = "my-postgres-db"
   }
