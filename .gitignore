@@ -38,3 +38,4 @@ terraform.rc
 *.dtmp
 *.bkp
 terraform/.terraform.lock.hcl
+.DS_Store
