@@ -92,19 +92,17 @@ resource "aws_iam_role_policy_attachment" "rds_monitoring_role_policy" {
 resource "aws_rds_cluster" "aurora_postgres" {
   cluster_identifier      = "aurora-postgres-cluster"
   engine                  = "aurora-postgresql"
-  engine_mode             = "serverless"
-  engine_version          = "16.1"
+  engine_mode             = "provisioned"
+  engine_version          = "16.3"
   database_name           = "gantt"
   master_username         = "auroraadmin"
   master_password         = "aurorapassword"
   vpc_security_group_ids  = [aws_security_group.rds_sg.id]
   db_subnet_group_name    = aws_db_subnet_group.rds_subnet_group.name
 
-  scaling_configuration {
-    auto_pause             = true
-    max_capacity           = 8
-    min_capacity           = 2
-    seconds_until_auto_pause = 300
+  serverlessv2_scaling_configuration {
+    max_capacity = 1.0
+    min_capacity = 0.5
   }
 
   skip_final_snapshot     = true
@@ -113,6 +111,13 @@ resource "aws_rds_cluster" "aurora_postgres" {
   tags = {
     Name = "aurora-postgres-cluster"
   }
+}
+
+resource "aws_rds_cluster_instance" "aurora_instance" {
+  cluster_identifier = aws_rds_cluster.aurora_postgres.id
+  instance_class     = "db.serverless"
+  engine             = aws_rds_cluster.aurora_postgres.engine
+  engine_version     = aws_rds_cluster.aurora_postgres.engine_version
 }
 
 # Create an IAM Role for RDS Proxy
