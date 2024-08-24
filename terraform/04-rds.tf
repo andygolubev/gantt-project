@@ -102,7 +102,7 @@ resource "aws_rds_cluster" "aurora_postgres" {
   scaling_configuration {
     auto_pause             = true
     max_capacity           = 2
-    min_capacity           = 0.5
+    min_capacity           = 1
     seconds_until_auto_pause = 300
   }
 
