@@ -1,7 +1,30 @@
-
 # ECS Cluster
 resource "aws_ecs_cluster" "main" {
   name = "my-ecs-cluster"
+}
+
+# Security Group for Load Balancer
+resource "aws_security_group" "lb_sg" {
+  name_prefix = "lb-sg-"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # Allow traffic from the internet
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "lb-sg"
+  }
 }
 
 # Security Group for ECS tasks
@@ -13,7 +36,7 @@ resource "aws_security_group" "ecs_tasks" {
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    security_groups = [aws_security_group.lb_sg.id]  # Allow traffic from the load balancer
   }
 
   egress {
@@ -33,7 +56,7 @@ resource "aws_lb" "app" {
   name               = "app-lb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.ecs_tasks.id]
+  security_groups    = [aws_security_group.lb_sg.id]
   subnets            = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
 
   tags = {
@@ -62,7 +85,6 @@ resource "aws_lb_target_group" "app" {
     Name = "app-tg"
   }
 }
-
 
 # Load Balancer Listener
 resource "aws_lb_listener" "app" {
@@ -201,4 +223,3 @@ resource "aws_appautoscaling_policy" "scale_up" {
     target_value = 50.0
   }
 }
-
