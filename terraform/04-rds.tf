@@ -101,8 +101,8 @@ resource "aws_rds_cluster" "aurora_postgres" {
 
   scaling_configuration {
     auto_pause             = true
-    max_capacity           = 2
-    min_capacity           = 1
+    max_capacity           = 8
+    min_capacity           = 2
     seconds_until_auto_pause = 300
   }
 
@@ -135,7 +135,7 @@ resource "aws_iam_role" "rds_proxy_role" {
 # Attach the correct policy for RDS Proxy to the IAM Role
 resource "aws_iam_role_policy_attachment" "rds_proxy_role_policy" {
   role       = aws_iam_role.rds_proxy_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSProxyServiceRolePolicy"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonRDSFullAccess"
 }
 
 # Create an RDS Proxy for Aurora PostgreSQL
