@@ -93,6 +93,7 @@ resource "aws_rds_cluster" "aurora_postgres" {
   cluster_identifier      = "aurora-postgres-cluster"
   engine                  = "aurora-postgresql"
   engine_mode             = "serverless"
+  engine_version          = "16.1"
   database_name           = "gantt"
   master_username         = "auroraadmin"
   master_password         = "aurorapassword"
