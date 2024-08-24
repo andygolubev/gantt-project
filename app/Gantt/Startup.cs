@@ -71,7 +71,7 @@ public class Startup
                 await context.Response.WriteAsJsonAsync(result);
             });
 
-            endpoints.MapPost("/write", async context =>
+            endpoints.MapGet("/write", async context =>
             {
                 var connection = context.RequestServices.GetRequiredService<IDbConnection>();
                 
@@ -113,7 +113,7 @@ public class Startup
                 }
             });
 
-            endpoints.MapPost("/create-schema", async context =>
+            endpoints.MapGet("/create-schema", async context =>
             {
                 var connection = context.RequestServices.GetRequiredService<IDbConnection>();
 
