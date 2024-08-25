@@ -20,8 +20,8 @@ jobs:
       id: ecr
       uses: jwalton/gh-ecr-login@v3
       with:
-        access-key-id: "AKIAW3MEEVESIEVQMLPS"
-        secret-access-key: "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"
+        access-key-id: "AKIATCKANDJX7LAGHE7W"
+        secret-access-key: "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"
         region: us-east-1
     - name: Tag the Docker image for ECR
       run: docker tag gantt:latest ${{ steps.ecr.outputs.account }}.dkr.ecr.us-east-1.amazonaws.com/gantt:latest
